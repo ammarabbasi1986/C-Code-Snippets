@@ -1,0 +1,128 @@
+//******************************************************************//
+//  Used This code in Programming arduino UNO. i am hopefull for it 
+//  to work over other platforms as well. main header file user to send
+//  query to MS Sql Server is "SQLARD.H" which can be found on github.
+//  which only accpets wchar_t variable type. 
+//  calling variable directly inside the "SQLARD.H" defined insert query 
+//  was a challenge. writting multiple if statements for each insert was
+//  resource consuming for embedded boards like Arduino UNO. 
+//  So i wrote this code which collects variables and makes a string to 
+//  be inserted into the insert function of the above said header file.
+//  Regards. Ammar. Email: ammarabbasi@gmail.com
+//******************************************************************//
+
+// Variable to passed to the insert query.
+
+wchar_t value1[] = L"'mystring'";  // string variable
+wchar_t value2[] = L"0";  
+wchar_t value3[] = L"0";
+wchar_t value4[]= L"getdate()";    // passing db funtion
+
+
+void query_composer()
+{
+  int i;
+  int index =0;
+
+  // Main Query String Sending 4 values to Database.
+  
+  wchar_t str1[] = L"INSERT INTO [yourdb].[yourdb]([id],[ValueA],[TypeB],[TypeC])VALUES(";
+  
+  // For Ending Bracker in Query String.
+  
+  wchar_t str2[] = L")";
+  
+  // For each Comma inside the Query String.
+  
+  wchar_t str3[] = L",";
+  
+  //  For each Double quotes inside Query String.
+  
+  wchar_t str4[] = L"\"";
+
+  //  Calculate Length of All Strings.
+
+  int len1 = sizeof(str1)/sizeof(wchar_t); 
+  int len2 = sizeof(value1)/sizeof(wchar_t);   //Defined Globaly.
+  int len3 = sizeof(value2)/sizeof(wchar_t);   //Defined Globaly.
+  int len4 = sizeof(value3)/sizeof(wchar_t);   //Defined Globaly.
+  int len5 = sizeof(value4)/sizeof(wchar_t);   //Defined Globaly.
+  int len6 = sizeof(str2)/sizeof(wchar_t);
+  int len7 = sizeof(str3)/sizeof(wchar_t);
+  int len8 = sizeof(str4)/sizeof(wchar_t);
+
+  int len_strsql = len1 + len2 + len3 + len4 + len5 + len6 + len7 -5 ; // Total Length of String to be.
+  
+  wchar_t str_sql[len_strsql];  // Define a char Array (string) variable to be made for main query function.
+
+  for (i=0 ; i<len1 ; i++)
+  {
+    str_sql[i] = str1[i];
+    index = i;
+  }
+  
+  for (i=0 ; i<len2; i++)         
+  {
+    str_sql[index] = value1[i];
+    index = index + 1;
+  }
+  
+  for (i = 0 ; i < len7 ; i++){   // insert comma. into the main string.
+
+    str_sql[index-1] = str3[i];
+    index = index + 1;
+
+  }
+
+  for (i = 0 ; i < len4 ; i++){
+
+    str_sql[index-2] = value2[i];
+    index = index + 1;
+
+  }
+
+  for (i = 0 ; i < len7 ; i++){
+
+    str_sql[index-3] = str3[i];
+    index = index + 1;
+
+  }
+
+  for (i = 0 ; i < len3 ; i++){
+
+    str_sql[index-4] = value3[i];
+    index = index + 1;
+
+  }
+    
+  for (i = 0 ; i < len7 ; i++){
+
+    str_sql[index-5] = str3[i];
+    index = index + 1;
+
+  }
+
+  for (i = 0 ; i < len5 ; i++){
+
+    str_sql[index-6] = value4[i];
+    index = index + 1;
+
+  }
+
+  for (i = 0 ; i < len6 ; i++){
+
+    str_sql[index-7] = str2[i];
+    index = index + 1;
+
+  }
+
+
+  //for (i = 0 ; i < len_strsql ; i++)
+  //{
+  //  Serial.write(str_sql[i]); 
+  //}
+
+
+  MSSQL.executeNonQuery(str_sql);  // Send Composed Query String to Insert Query Function.
+   
+}
