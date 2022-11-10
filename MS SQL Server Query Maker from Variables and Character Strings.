@@ -1,7 +1,7 @@
 //******************************************************************//
 //  Used This code in Programming arduino UNO. i am hopefull for it 
-//  to work over other platforms as well. main header file user to send
-//  query to MS Sql Server is "SQLARD.H" which can be found on github.
+//  to work over the other platforms as well. main header file used to send
+//  query to the MS Sql Server is "SQLARD.H" which can be found on github.
 //  which only accpets wchar_t variable type. 
 //  calling variable directly inside the "SQLARD.H" defined insert query 
 //  was a challenge. writting multiple if statements for each insert was
